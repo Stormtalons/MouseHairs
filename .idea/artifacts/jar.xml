@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="jar">
+    <output-path>D:/Programs</output-path>
+    <root id="archive" name="MouseHairs.jar">
+      <element id="file-copy" path="$PROJECT_DIR$/src/mouse.png" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="MouseHairs" />
+    </root>
+  </artifact>
+</component>
