@@ -196,6 +196,15 @@ class Settings extends JFrame
 			}
 		});
 
+		addWindowFocusListener(new WindowFocusListener()
+		{
+			public void windowGainedFocus(WindowEvent e){}
+			public void windowLostFocus(WindowEvent e)
+			{
+				hidePanel();
+			}
+		});
+
 		setSize(new Dimension(300, 150));
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
