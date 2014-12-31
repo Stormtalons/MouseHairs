@@ -6,6 +6,9 @@ import javax.swing.colorchooser.DefaultColorSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.concurrent.locks.LockSupport;
 
@@ -234,6 +237,37 @@ class Settings extends JFrame
 		try {Main.setSize(Integer.parseInt(size.getText()));} catch (Exception e){}
 		try {Main.smoothness = (long)Math.ceil(Double.parseDouble(smoothness.getText()) * 1000000.0);} catch (Exception e){}
 	}
+
+	public void saveToFile()
+	{
+		String color = "color=" + Main.color.getRed() + "," + Main.color.getGreen() + "," + Main.color.getBlue();
+		try {Files.write(Paths.get("MouseHairs.ini"), (color + "\r\nsize=" + Main.size + "\r\nsmoothness=" + Main.smoothness + "\r\n").getBytes(), StandardOpenOption.CREATE);} catch (Exception e){}
+	}
+
+	public void load()
+	{
+		if (Files.exists(Paths.get("MouseHairs.ini")))
+			try
+			{
+			    java.util.List<String> lines = Files.readAllLines(Paths.get("MouseHairs.ini"));
+				for (int i = 0; i < lines.size(); i++)
+				{
+					String[] parts = lines.get(i).split("=");
+					if (parts[0].equals("color"))
+					{
+						String[] rgb = parts[1].split(",");
+						try {Main.setColor(new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2])));} catch (Exception e){}
+					}
+					else if (parts[0].equals("size"))
+						try {Main.setSize(Integer.parseInt(parts[1]));} catch (Exception e){}
+					else
+						try {Main.smoothness = (long)Math.ceil(Double.parseDouble(parts[1]));} catch (Exception e){}
+				}
+			} catch (Exception e)
+			{
+
+			}
+	}
 }
 
 public class Main
@@ -300,6 +334,7 @@ public class Main
 
 	public static void main(String[] args) throws Exception
 	{
+		settings.load();
 		lines = new ArrayList<>();
 		for (int i = 0; i < 4; ++i)
 			lines.add(new ML(i));
@@ -307,7 +342,11 @@ public class Main
 		MenuItem ex = new MenuItem("Exit");
 		MenuItem showSettings = new MenuItem("Settings");
 		final MenuItem wowHotfix = new MenuItem("Enable mouse button hook (WoW hotfix)");
-		ex.addActionListener(e -> System.exit(0));
+		ex.addActionListener(e ->
+		{
+			settings.saveToFile();
+			System.exit(0);
+		});
 		wowHotfix.addActionListener(e ->
 		{
 			wowHotfix.setLabel((monitorMouse ? "En" : "Dis") + "able mouse button hook (WoW hotfix)");
